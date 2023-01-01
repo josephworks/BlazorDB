@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 	  <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <RazorLangVersion>3.0</RazorLangVersion>
     <LangVersion>Latest</LangVersion>
     <AssemblyName>BlazorDB</AssemblyName>
-    <Version>$(Version)</Version>
-    <Authors>Nathan Westfall</Authors>
+    <Version>1.0.1</Version>
+    <Authors>Nathan Westfall, Joseph Robinson</Authors>
     <Description>A Blazor framework for interacting with IndexedDB</Description>
-    <RepositoryUrl>https://github.com/nwestfall/BlazorDB/</RepositoryUrl>
+    <RepositoryUrl>https://github.com/josephworks/BlazorDB/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Blazor IndexedDB</PackageTags>
     <Copyright>Nathan Westfall</Copyright>
@@ -18,11 +18,12 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>BlazorIndexedDB</PackageId>
     <PackageIconUrl>https://github.com/nwestfall/BlazorDB/blob/master/logo.png?raw=true</PackageIconUrl>
+    <Title>Blazor IndexedDB</Title>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="3.0.0-preview6.19307.2" />
-    <PackageReference Include="Microsoft.JSInterop" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.JSInterop" Version="7.0.1" />
   </ItemGroup>
 
 </Project>

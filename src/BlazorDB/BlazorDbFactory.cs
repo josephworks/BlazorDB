@@ -35,15 +35,12 @@ namespace BlazorDB
         async Task BuildFromServices()
         {
             var dbStores = _serviceProvider.GetServices<DbStore>();
-            if(dbStores != null)
+            foreach(var dbStore in dbStores)
             {
-                foreach(var dbStore in dbStores)
-                {
-                    Console.WriteLine($"{dbStore.Name}{dbStore.Version}{dbStore.StoreSchemas.Count}");
-                    var db = new IndexedDbManager(dbStore, _jsRuntime);
-                    await db.OpenDb();
-                    _dbs.Add(dbStore.Name, db);
-                }
+                Console.WriteLine($"{dbStore.Name}{dbStore.Version}{dbStore.StoreSchemas.Count}");
+                var db = new IndexedDbManager(dbStore, _jsRuntime);
+                await db.OpenDb();
+                _dbs.Add(dbStore.Name, db);
             }
         }
     }
