@@ -7,7 +7,7 @@
     <RazorLangVersion>6.0</RazorLangVersion>
     <LangVersion>Latest</LangVersion>
     <AssemblyName>BlazorDB</AssemblyName>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Nathan Westfall, Joseph Robinson</Authors>
     <Description>A Blazor framework for interacting with IndexedDB</Description>
     <RepositoryUrl>https://github.com/josephworks/BlazorDB/</RepositoryUrl>
@@ -19,6 +19,7 @@
     <PackageId>BlazorIndexedDB</PackageId>
     <PackageIconUrl>https://github.com/nwestfall/BlazorDB/blob/master/logo.png?raw=true</PackageIconUrl>
     <Title>Blazor IndexedDB</Title>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
