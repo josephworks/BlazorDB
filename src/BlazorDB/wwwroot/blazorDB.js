@@ -5,7 +5,6 @@ export const blazorDB = {
     createDb: function (dotnetReference, transaction, dbStore) {
         if (blazorDB.databases.find(d => d.name == dbStore.name) !== undefined)
             console.warn("Blazor.IndexedDB.Framework - Database already exists");
-        }
             
         var db = new Dexie(dbStore.name);
 

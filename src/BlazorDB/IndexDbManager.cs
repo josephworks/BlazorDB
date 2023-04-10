@@ -46,11 +46,10 @@ namespace BlazorDB
         /// and create the stores defined in DbStore.
         /// </summary>
         /// <returns></returns>
-        public async Task<Guid> OpenDb(Action<BlazorDbEvent> action = null)
+        public async Task OpenDb(Action<BlazorDbEvent> action = null)
         {
             var trans = GenerateTransaction(action);
             await CallJavascriptVoid(IndexedDbFunctions.CREATE_DB, trans, _dbStore);
-            return trans;
         }
 
         /// <summary>

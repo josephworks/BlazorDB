@@ -7,13 +7,13 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddBlazorDB(options =>
 {
     options.Name = "Test";
     options.Version = 1;
-    options.StoreSchemas = new List<StoreSchema>()
+    options.StoreSchemas = new List<StoreSchema>
     {
         new StoreSchema()
         {
