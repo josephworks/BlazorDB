@@ -1,7 +1,6 @@
-namespace BlazorDB
+namespace BlazorDB;
+
+public class UpdateRecord<T> : StoreRecord<T>
 {
-    public class UpdateRecord<T> : StoreRecord<T>
-    {
-        public object Key { get; set; }
-    }
+    public object Key { get; set; }
 }

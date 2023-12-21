@@ -1,14 +1,13 @@
-namespace BlazorDB
-{
-    public class IndexFilterValue
-    {
-        public IndexFilterValue(string indexName, object filterValue)
-        {
-            IndexName = indexName;
-            FilterValue = filterValue;
-        }
+namespace BlazorDB;
 
-        public string IndexName { get; set; }
-        public object FilterValue { get; set; }
+public class IndexFilterValue
+{
+    public IndexFilterValue(string indexName, object filterValue)
+    {
+        IndexName = indexName;
+        FilterValue = filterValue;
     }
+
+    public string IndexName { get; set; }
+    public object FilterValue { get; set; }
 }

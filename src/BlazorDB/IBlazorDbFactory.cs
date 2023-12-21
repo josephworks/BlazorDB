@@ -1,11 +1,10 @@
 using System.Threading.Tasks;
 
-namespace BlazorDB
-{
-    public interface IBlazorDbFactory
-    {
-        Task<IndexedDbManager> GetDbManager(string dbName);
+namespace BlazorDB;
 
-        Task<IndexedDbManager> GetDbManager(DbStore dbStore);
-    }
+public interface IBlazorDbFactory
+{
+    Task<IndexedDbManager> GetDbManager(string dbName);
+
+    Task<IndexedDbManager> GetDbManager(DbStore dbStore);
 }

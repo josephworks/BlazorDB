@@ -3,31 +3,31 @@ import Dexie from './dexie.mjs'
 export const blazorDB = {
     databases: [],
     createDb: function (dotnetReference, transaction, dbStore) {
-        if (blazorDB.databases.find(d => d.name == dbStore.name) !== undefined)
+        if (blazorDB.databases.find(d => d.name === dbStore.name) !== undefined)
             console.warn("Blazor.IndexedDB.Framework - Database already exists");
             
-        var db = new Dexie(dbStore.name);
+        let db = new Dexie(dbStore.name);
 
-        var stores = {};
-        for (var i = 0; i < dbStore.storeSchemas.length; i++) {
+        let stores = {};
+        for (let i = 0; i < dbStore.storeSchemas.length; i++) {
             // build string
-            var schema = dbStore.storeSchemas[i];
-            var def = "";
+            let schema = dbStore.storeSchemas[i];
+            let def = "";
             if (schema.primaryKeyAuto)
                 def = def + "++";
             if (schema.primaryKey !== null && schema.primaryKey !== "")
                 def = def + schema.primaryKey;
             if (schema.uniqueIndexes !== undefined) {
-                for (var j = 0; j < schema.uniqueIndexes.length; j++) {
+                for (let j = 0; j < schema.uniqueIndexes.length; j++) {
                     def = def + ",";
-                    var u = "&" + schema.uniqueIndexes[j];
+                    let u = "&" + schema.uniqueIndexes[j];
                     def = def + u;
                 }
             }
             if (schema.indexes !== undefined) {
-                for (var j = 0; j < schema.indexes.length; j++) {
+                for (let j = 0; j < schema.indexes.length; j++) {
                     def = def + ",";
-                    var u = schema.indexes[j];
+                    let u = schema.indexes[j];
                     def = def + u;
                 }
             }
@@ -44,8 +44,8 @@ export const blazorDB = {
             db.version(dbStore.version).stores(stores);
         }
 
-        if (blazorDB.databases.find(d => d.name == dbStore.name) !== undefined) {
-            blazorDB.databases.find(d => d.name == dbStore.name).db = db;
+        if (blazorDB.databases.find(d => d.name === dbStore.name) !== undefined) {
+            blazorDB.databases.find(d => d.name === dbStore.name).db = db;
         } else {
             blazorDB.databases.push({
                 name: dbStore.name,
@@ -61,7 +61,7 @@ export const blazorDB = {
     },
     deleteDb: function (dotnetReference, transaction, dbName) {
         blazorDB.getDb(dbName).then(db => {
-            var index = blazorDB.databases.findIndex(d => d.name == dbName);
+            let index = blazorDB.databases.findIndex(d => d.name === dbName);
             blazorDB.databases.splice(index, 1);
             db.delete().then(_ => {
                 dotnetReference.invokeMethodAsync('BlazorDBCallback', transaction, false, 'Database deleted');
@@ -132,7 +132,7 @@ export const blazorDB = {
         });
     },
     findItem: function (dotnetReference, transaction, item) {
-        var promise = new Promise((resolve, reject) => {
+        let promise = new Promise((resolve, reject) => {
             blazorDB.getTable(item.dbName, item.storeName).then(table => {
                 table.get(item.key).then(i => {
                     dotnetReference.invokeMethodAsync('BlazorDBCallback', transaction, false, 'Found item');
@@ -163,7 +163,7 @@ export const blazorDB = {
     getFirstItem: function (dotnetReference, transaction, item) {
         return new Promise((resolve, reject) => {
             blazorDB.getTable(item.dbName, item.storeName).then(table => {
-                var item = table.toCollection().first();
+                let item = table.toCollection().first();
                 dotnetReference.invokeMethodAsync('BlazorDBCallback', transaction, false, 'getFirstItem succeeded');
                 resolve(item);
             }).catch(e => {
@@ -178,7 +178,7 @@ export const blazorDB = {
             blazorDB.getTable(item.dbName, item.storeName).then(table => {
                 table.toCollection().count().then((result) => {
                     dotnetReference.invokeMethodAsync('BlazorDBCallback', transaction, false, 'getMinIndex succeeded');
-                    resolve(result == 0 ? -1 : 0);
+                    resolve(result === 0 ? -1 : 0);
                 });
             }).catch(e => {
                 console.error(e);
@@ -190,7 +190,7 @@ export const blazorDB = {
     getLastItem: function (dotnetReference, transaction, item) {
         return new Promise((resolve, reject) => {
             blazorDB.getTable(item.dbName, item.storeName).then(table => {
-                var item = table.toCollection().last();
+                let item = table.toCollection().last();
                 dotnetReference.invokeMethodAsync('BlazorDBCallback', transaction, false, 'getLastItem succeeded');
                 resolve(item);
             }).catch(e => {
@@ -230,12 +230,12 @@ export const blazorDB = {
     },
     getDb: function(dbName) {
         return new Promise((resolve, reject) => {
-            if (blazorDB.databases.find(d => d.name == dbName) === undefined) {
+            if (blazorDB.databases.find(d => d.name === dbName) === undefined) {
                 console.warn("Blazor.IndexedDB.Framework - Database doesn't exist");
-                var db1 = new Dexie(dbName);
+                let db1 = new Dexie(dbName);
                 db1.open().then(function (db) {
-                    if (blazorDB.databases.find(d => d.name == dbName) !== undefined) {
-                        blazorDB.databases.find(d => d.name == dbName).db = db1;
+                    if (blazorDB.databases.find(d => d.name === dbName) !== undefined) {
+                        blazorDB.databases.find(d => d.name === dbName).db = db1;
                     } else {
                         blazorDB.databases.push({
                             name: dbName,
@@ -249,7 +249,7 @@ export const blazorDB = {
                     reject("No database");
                 });
             } else {
-                var db = blazorDB.databases.find(d => d.name == dbName).db;
+                let db = blazorDB.databases.find(d => d.name === dbName).db;
                 resolve(db);
             }
         });
@@ -257,7 +257,7 @@ export const blazorDB = {
     getTable: function (dbName, storeName) {
         return new Promise((resolve, reject) => {
             blazorDB.getDb(dbName).then(db => {
-                var table = db.table(storeName);
+                let table = db.table(storeName);
                 resolve(table);
             });
         });
@@ -290,7 +290,7 @@ export const blazorDB = {
     // This function purposefully DOES NOT return a promise. This is because .upgrade() DOES NOT return a promise.
     upgradeDbSchema: function (db, stores, dbStore) {
         // Get information to build the update function
-        var schemaUpdate = dbStore.storeSchemaUpgrades[0];
+        let schemaUpdate = dbStore.storeSchemaUpgrades[0];
         //Assumption: This currently only works for 1 schema. TODO: ALLOW MULTIPLE SCHEMA UPDATES.
         switch (schemaUpdate.upgradeAction) {
             case 'split':
@@ -310,7 +310,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
+                        for (let i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
                             row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] * schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                         }
                     });
@@ -321,7 +321,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
+                        for (let i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
                             row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] * schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                             delete row[schemaUpdate.columnsToPerformActionOn[i]];
                         }
@@ -333,7 +333,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
+                        for (let i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
                             row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] / schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                         }
                     });
@@ -344,7 +344,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
+                        for (let i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
                             row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] / schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                             delete row[schemaUpdate.columnsToPerformActionOn[i]];
                         }
@@ -356,7 +356,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
+                        for (let i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
                             row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] + schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                             //delete row[schemaUpdate.columnsToPerformActionOn[i]];
                         }
@@ -368,7 +368,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
+                        for (let i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
                             row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] + schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                             delete row[schemaUpdate.columnsToPerformActionOn[i]];
                         }
@@ -380,7 +380,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
+                        for (let i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
                             row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] - schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                             //delete row[schemaUpdate.columnsToPerformActionOn[i]];
                         }
@@ -392,7 +392,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
+                        for (let i = 0; i < schemaUpdate.upgradeActionParameterList.length; i++) {
                             row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] - schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                             delete row[schemaUpdate.columnsToPerformActionOn[i]];
                         }
@@ -404,7 +404,7 @@ export const blazorDB = {
                     // Get the table, cast to collection, call necessary function
                     return trans.table(schemaUpdate.name).toCollection().modify(row => {
                         // modify each row
-                        for (var i = 0; i < schemaUpdate.columnsToPerformActionOn.length; i++) {
+                        for (let i = 0; i < schemaUpdate.columnsToPerformActionOn.length; i++) {
                             //row[schemaUpdate.columnsToReceiveDataFromAction[i]] = Math.round((row[schemaUpdate.columnsToPerformActionOn[i]] - schemaUpdate.upgradeActionParameterList[i]) * 100) / 100;
                             delete row[schemaUpdate.columnsToPerformActionOn[i]];
                         }
@@ -419,7 +419,7 @@ export const blazorDB = {
     // This function verifies that the schemaUpdate (StoreSchemaUpgrade object) contains the necessary properties
     // to function as intended.
     verifyStoreSchemaUpgrades: function (storeSchemaUpgrades, db) {
-        var schemaUpdate = storeSchemaUpgrades[0];
+        let schemaUpdate = storeSchemaUpgrades[0];
         switch (schemaUpdate.upgradeAction) {
             case 'split':
                 try {
@@ -435,17 +435,17 @@ export const blazorDB = {
                         console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain one value/char to execute split.");
                         return false;
                     }
-                    if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                    if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                         console.error("The property ColumnsToPerformActionOn does not contain one column name. ColumnsToPerformActionOn should " +
                             "contain one store column name when trying to perform the split upgrade action.");
                         return false;
                     }
-                    if (schemaUpdate.columnsToReceiveDataFromAction.length != 2) {
+                    if (schemaUpdate.columnsToReceiveDataFromAction.length !== 2) {
                         console.error("The property ColumnsToRecevieDataFromAction does not contain two column names. " +
                             "This property must contain the two column names that you want the split data to be inserted into.");
                         return false;
                     }
-                    if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                    if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                         console.error("The property UpgradeActionParameterList does not contain one value. " +
                             "UpgradeActionParameterList should contain the value/char that you want to split on. ");
                         return false;
@@ -472,17 +472,17 @@ export const blazorDB = {
                     console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain the multiplier.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one column name. ColumnsToPerformActionOn should " +
                         "contain one store column name(multiplicand) when trying to perform the multiply upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.columnsToReceiveDataFromAction.length != 1) {
+                if (schemaUpdate.columnsToReceiveDataFromAction.length !== 1) {
                     console.error("The property ColumnsToRecevieDataFromAction does not contain one column name. " +
                         "This value should be the same as ColumnsToPerformActionOn when performing the multiply upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                     console.error("The property UpgradeActionParameterList does not contain one value. " +
                         "UpgradeActionParameterList should contain the multiplier. ");
                     return false;
@@ -504,17 +504,17 @@ export const blazorDB = {
                     console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain the multiplier.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one column name. ColumnsToPerformActionOn should " +
                         "contain one store column name when trying to perform the multiply-delete upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.columnsToReceiveDataFromAction.length != 1) {
+                if (schemaUpdate.columnsToReceiveDataFromAction.length !== 1) {
                     console.error("The property ColumnsToRecevieDataFromAction does not contain one column name. " +
                         "ColumnsToRecevieDataFromAction should contain the name of the new store column that the product will be inserted into.");
                     return false;
                 }
-                if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                     console.error("The property UpgradeActionParameterList does not contain one value. " +
                         "UpgradeActionParameterList should contain the multiplier. ");
                     return false;
@@ -536,17 +536,17 @@ export const blazorDB = {
                     console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain the divisor.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one column name. ColumnsToPerformActionOn should " +
                         "contain one store column name when trying to perform the divide upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.columnsToReceiveDataFromAction.length != 1) {
+                if (schemaUpdate.columnsToReceiveDataFromAction.length !== 1) {
                     console.error("The property ColumnsToRecevieDataFromAction does not contain one column name. " +
                         "ColumnsToRecevieDataFromAction should contain the same column name as ColumnsToPerformActionOn.");
                     return false;
                 }
-                if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                     console.error("The property UpgradeActionParameterList does not contain one value. " +
                         "UpgradeActionParameterList should contain the divisor.");
                     return false;
@@ -568,17 +568,17 @@ export const blazorDB = {
                     console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain the divisor.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one column name. ColumnsToPerformActionOn should " +
                         "contain one store column name when trying to perform the divide-delete upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.columnsToReceiveDataFromAction.length != 1) {
+                if (schemaUpdate.columnsToReceiveDataFromAction.length !== 1) {
                     console.error("The property ColumnsToRecevieDataFromAction does not contain one column name. " +
                         "ColumnsToRecevieDataFromAction should contain the new store column name that you want to insert the quotient value into. ");
                     return false;
                 }
-                if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                     console.error("The property UpgradeActionParameterList does not contain one value. " +
                         "UpgradeActionParameterList should contain the divisor.");
                     return false;
@@ -600,17 +600,17 @@ export const blazorDB = {
                     console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain the value you are adding to ColumnsToPerformActionOn.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one store column name. ColumnsToPerformActionOn should " +
                         "contain one store column name when trying to perform the add upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.columnsToReceiveDataFromAction.length != 1) {
+                if (schemaUpdate.columnsToReceiveDataFromAction.length !== 1) {
                     console.error("The property ColumnsToRecevieDataFromAction does not contain one column name. " +
                         "ColumnsToRecevieDataFromAction should contain the same store column name as ColumnsToPerformActionOn.");
                     return false;
                 }
-                if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                     console.error("The property UpgradeActionParameterList does not contain one value. " +
                         "UpgradeActionParameterList should contain the value that you want to add to ColumnsToPerformActionOn.");
                     return false;
@@ -632,17 +632,17 @@ export const blazorDB = {
                     console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain the value you are adding to ColumnsToPerformActionOn.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one store column name. ColumnsToPerformActionOn should " +
                         "contain one store column name when trying to perform the add-delete upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.columnsToReceiveDataFromAction.length != 1) {
+                if (schemaUpdate.columnsToReceiveDataFromAction.length !== 1) {
                     console.error("The property ColumnsToRecevieDataFromAction does not contain one column name. " +
                         "ColumnsToRecevieDataFromAction should contain the new store column name that you want to insert the sum into. ");
                     return false;
                 }
-                if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                     console.error("The property UpgradeActionParameterList does not contain one value. " +
                         "UpgradeActionParameterList should contain the value that you want to add to ColumnsToPerformActionOn");
                     return false;
@@ -663,17 +663,17 @@ export const blazorDB = {
                     console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain the subtrahend.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one store column name. ColumnsToPerformActionOn should " +
                         "contain one store column name when trying to perform the subtract upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.columnsToReceiveDataFromAction.length != 1) {
+                if (schemaUpdate.columnsToReceiveDataFromAction.length !== 1) {
                     console.error("The property ColumnsToRecevieDataFromAction does not contain one store column name. " +
                         "ColumnsToRecevieDataFromAction should contain the same store column name as ColumnsToPerformActionOn. ");
                     return false;
                 }
-                if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                     console.error("The property UpgradeActionParameterList does not contain one value. " +
                         "UpgradeActionParameterList should contain the subtrahend.");
                     return false;
@@ -694,17 +694,17 @@ export const blazorDB = {
                     console.error("The property UpgradeActionParameterList is empty. UpgradeActionParameterList should contain the subtrahend.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one store column name. ColumnsToPerformActionOn should " +
                         "contain one store column name when trying to perform the subtract-delete upgrade action.");
                     return false;
                 }
-                if (schemaUpdate.columnsToReceiveDataFromAction.length != 1) {
+                if (schemaUpdate.columnsToReceiveDataFromAction.length !== 1) {
                     console.error("The property ColumnsToRecevieDataFromAction does not contain one store column name. " +
                         "ColumnsToRecevieDataFromAction should contain new store column name that you want the difference to be inserted into.");
                     return false;
                 }
-                if (schemaUpdate.upgradeActionParameterList.length != 1) {
+                if (schemaUpdate.upgradeActionParameterList.length !== 1) {
                     console.error("The property UpgradeActionParameterList does not contain one value. " +
                         "UpgradeActionParameterList should contain the value that you want to subract from ColumnsToPerformActionOn.");
                     return false;
@@ -716,13 +716,12 @@ export const blazorDB = {
                     console.error("The property ColumnsToPerformActionOn is empty. ColumnsToPerformActionOn should contain one store column name to be deleted.");
                     return false;
                 }
-                if (schemaUpdate.columnsToPerformActionOn.length != 1) {
+                if (schemaUpdate.columnsToPerformActionOn.length !== 1) {
                     console.error("The property ColumnsToPerformActionOn does not contain one store column name. ColumnsToPerformActionOn should " +
                         "contain one store column name when trying to perform the delete-column upgrade action.");
                     return false;
                 }
                 return true;
-                break;
             default:
                 console.error('Upgrade not implemented');
                 return false;

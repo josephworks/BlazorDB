@@ -6,7 +6,7 @@
     <RazorLangVersion>6.0</RazorLangVersion>
     <LangVersion>Latest</LangVersion>
     <AssemblyName>BlazorDB</AssemblyName>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Nathan Westfall, Joseph Robinson</Authors>
     <Description>A Blazor framework for interacting with IndexedDB</Description>
     <RepositoryUrl>https://github.com/josephworks/BlazorDB/</RepositoryUrl>
@@ -31,8 +31,8 @@
     <PackageReference Include="Microsoft.JSInterop" Version="7.0.4" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.2.23128.3" />
-    <PackageReference Include="Microsoft.JSInterop" Version="8.0.0-preview.2.23153.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.JSInterop" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
