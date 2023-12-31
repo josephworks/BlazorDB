@@ -6,7 +6,7 @@
     <RazorLangVersion>6.0</RazorLangVersion>
     <LangVersion>Latest</LangVersion>
     <AssemblyName>BlazorDB</AssemblyName>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Authors>Nathan Westfall, Joseph Robinson</Authors>
     <Description>A Blazor framework for interacting with IndexedDB</Description>
     <RepositoryUrl>https://github.com/josephworks/BlazorDB/</RepositoryUrl>
