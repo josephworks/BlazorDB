@@ -10,7 +10,7 @@
  *
  * Apache License Version 2.0, January 2004, http://www.apache.org/licenses/
  */
-
+ 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 Permission to use, copy, modify, and/or distribute this software for any
@@ -483,7 +483,7 @@ function hookCreatingChain(f1, f2) {
         if (res !== undefined)
             arguments[0] = res;
         var onsuccess = this.onsuccess,
-            onerror = this.onerror;
+        onerror = this.onerror;
         this.onsuccess = null;
         this.onerror = null;
         var res2 = f2.apply(this, arguments);
@@ -500,7 +500,7 @@ function hookDeletingChain(f1, f2) {
     return function () {
         f1.apply(this, arguments);
         var onsuccess = this.onsuccess,
-            onerror = this.onerror;
+        onerror = this.onerror;
         this.onsuccess = this.onerror = null;
         f2.apply(this, arguments);
         if (onsuccess)
@@ -516,7 +516,7 @@ function hookUpdatingChain(f1, f2) {
         var res = f1.apply(this, arguments);
         extend(modifications, res);
         var onsuccess = this.onsuccess,
-            onerror = this.onerror;
+        onerror = this.onerror;
         this.onsuccess = null;
         this.onerror = null;
         var res2 = f2.apply(this, arguments);
@@ -557,37 +557,37 @@ function promisableChain(f1, f2) {
 
 var INTERNAL = {};
 var LONG_STACKS_CLIP_LIMIT = 100,
-    MAX_LONG_STACKS = 20, ZONE_ECHO_LIMIT = 100, _a$1 = typeof Promise === 'undefined' ?
-        [] :
-        (function () {
-            var globalP = Promise.resolve();
-            if (typeof crypto === 'undefined' || !crypto.subtle)
-                return [globalP, getProto(globalP), globalP];
-            var nativeP = crypto.subtle.digest("SHA-512", new Uint8Array([0]));
-            return [
-                nativeP,
-                getProto(nativeP),
-                globalP
-            ];
-        })(), resolvedNativePromise = _a$1[0], nativePromiseProto = _a$1[1], resolvedGlobalPromise = _a$1[2], nativePromiseThen = nativePromiseProto && nativePromiseProto.then;
+MAX_LONG_STACKS = 20, ZONE_ECHO_LIMIT = 100, _a$1 = typeof Promise === 'undefined' ?
+    [] :
+    (function () {
+        var globalP = Promise.resolve();
+        if (typeof crypto === 'undefined' || !crypto.subtle)
+            return [globalP, getProto(globalP), globalP];
+        var nativeP = crypto.subtle.digest("SHA-512", new Uint8Array([0]));
+        return [
+            nativeP,
+            getProto(nativeP),
+            globalP
+        ];
+    })(), resolvedNativePromise = _a$1[0], nativePromiseProto = _a$1[1], resolvedGlobalPromise = _a$1[2], nativePromiseThen = nativePromiseProto && nativePromiseProto.then;
 var NativePromise = resolvedNativePromise && resolvedNativePromise.constructor;
 var patchGlobalPromise = !!resolvedGlobalPromise;
 var stack_being_generated = false;
 var schedulePhysicalTick = resolvedGlobalPromise ?
     function () { resolvedGlobalPromise.then(physicalTick); }
     :
-    _global.setImmediate ?
-        setImmediate.bind(null, physicalTick) :
-        _global.MutationObserver ?
-            function () {
-                var hiddenDiv = document.createElement("div");
-                (new MutationObserver(function () {
-                    physicalTick();
-                    hiddenDiv = null;
-                })).observe(hiddenDiv, { attributes: true });
-                hiddenDiv.setAttribute('i', '1');
-            } :
-            function () { setTimeout(physicalTick, 0); };
+        _global.setImmediate ?
+            setImmediate.bind(null, physicalTick) :
+            _global.MutationObserver ?
+                function () {
+                    var hiddenDiv = document.createElement("div");
+                    (new MutationObserver(function () {
+                        physicalTick();
+                        hiddenDiv = null;
+                    })).observe(hiddenDiv, { attributes: true });
+                    hiddenDiv.setAttribute('i', '1');
+                } :
+                function () { setTimeout(physicalTick, 0); };
 var asap = function (callback, args) {
     microtickQueue.push([callback, args]);
     if (needsNewPhysicalTick) {
@@ -596,10 +596,10 @@ var asap = function (callback, args) {
     }
 };
 var isOutsideMicroTick = true,
-    needsNewPhysicalTick = true,
-    unhandledErrors = [],
-    rejectingErrors = [],
-    currentFulfiller = null, rejectionMapper = mirror;
+needsNewPhysicalTick = true,
+unhandledErrors = [],
+rejectingErrors = [],
+currentFulfiller = null, rejectionMapper = mirror;
 var globalPSD = {
     id: 'global',
     global: true,
@@ -684,8 +684,8 @@ props(DexiePromise.prototype, {
             return this.then(null, onRejected);
         var type = arguments[0], handler = arguments[1];
         return typeof type === 'function' ? this.then(null, function (err) {
-                return err instanceof type ? handler(err) : PromiseReject(err);
-            })
+            return err instanceof type ? handler(err) : PromiseReject(err);
+        })
             : this.then(null, function (err) {
                 return err && err.name === type ? handler(err) : PromiseReject(err);
             });
@@ -1477,14 +1477,14 @@ var Table =  (function () {
             return _this.core.mutate({ trans: trans, type: 'add', keys: key != null ? [key] : null, values: [objToAdd] });
         }).then(function (res) { return res.numFailures ? DexiePromise.reject(res.failures[0]) : res.lastResult; })
             .then(function (lastResult) {
-                if (keyPath) {
-                    try {
-                        setByKeyPath(obj, keyPath, lastResult);
-                    }
-                    catch (_) { }
+            if (keyPath) {
+                try {
+                    setByKeyPath(obj, keyPath, lastResult);
                 }
-                return lastResult;
-            });
+                catch (_) { }
+            }
+            return lastResult;
+        });
     };
     Table.prototype.update = function (keyOrObject, modifications) {
         if (typeof keyOrObject === 'object' && !isArray(keyOrObject)) {
@@ -1519,14 +1519,14 @@ var Table =  (function () {
         return this._trans('readwrite', function (trans) { return _this.core.mutate({ trans: trans, type: 'put', values: [objToAdd], keys: key != null ? [key] : null }); })
             .then(function (res) { return res.numFailures ? DexiePromise.reject(res.failures[0]) : res.lastResult; })
             .then(function (lastResult) {
-                if (keyPath) {
-                    try {
-                        setByKeyPath(obj, keyPath, lastResult);
-                    }
-                    catch (_) { }
+            if (keyPath) {
+                try {
+                    setByKeyPath(obj, keyPath, lastResult);
                 }
-                return lastResult;
-            });
+                catch (_) { }
+            }
+            return lastResult;
+        });
     };
     Table.prototype.delete = function (key) {
         var _this = this;
@@ -1564,12 +1564,12 @@ var Table =  (function () {
                 objects;
             return _this.core.mutate({ trans: trans, type: 'add', keys: keys, values: objectsToAdd, wantResults: wantResults })
                 .then(function (_a) {
-                    var numFailures = _a.numFailures, results = _a.results, lastResult = _a.lastResult, failures = _a.failures;
-                    var result = wantResults ? results : lastResult;
-                    if (numFailures === 0)
-                        return result;
-                    throw new BulkError(_this.name + ".bulkAdd(): " + numFailures + " of " + numObjects + " operations failed", failures);
-                });
+                var numFailures = _a.numFailures, results = _a.results, lastResult = _a.lastResult, failures = _a.failures;
+                var result = wantResults ? results : lastResult;
+                if (numFailures === 0)
+                    return result;
+                throw new BulkError(_this.name + ".bulkAdd(): " + numFailures + " of " + numObjects + " operations failed", failures);
+            });
         });
     };
     Table.prototype.bulkPut = function (objects, keysOrOptions, options) {
@@ -1589,12 +1589,12 @@ var Table =  (function () {
                 objects;
             return _this.core.mutate({ trans: trans, type: 'put', keys: keys, values: objectsToPut, wantResults: wantResults })
                 .then(function (_a) {
-                    var numFailures = _a.numFailures, results = _a.results, lastResult = _a.lastResult, failures = _a.failures;
-                    var result = wantResults ? results : lastResult;
-                    if (numFailures === 0)
-                        return result;
-                    throw new BulkError(_this.name + ".bulkPut(): " + numFailures + " of " + numObjects + " operations failed", failures);
-                });
+                var numFailures = _a.numFailures, results = _a.results, lastResult = _a.lastResult, failures = _a.failures;
+                var result = wantResults ? results : lastResult;
+                if (numFailures === 0)
+                    return result;
+                throw new BulkError(_this.name + ".bulkPut(): " + numFailures + " of " + numObjects + " operations failed", failures);
+            });
         });
     };
     Table.prototype.bulkDelete = function (keys) {
@@ -2181,17 +2181,17 @@ var Collection =  (function () {
                         var criteria = isPlainKeyRange(ctx) &&
                             ctx.limit === Infinity &&
                             (typeof changes !== 'function' || changes === deleteCallback) && {
-                                index: ctx.index,
-                                range: ctx.range
-                            };
+                            index: ctx.index,
+                            range: ctx.range
+                        };
                         return Promise.resolve(addValues.length > 0 &&
                             coreTable.mutate({ trans: trans, type: 'add', values: addValues })
                                 .then(function (res) {
-                                    for (var pos in res.failures) {
-                                        deleteKeys.splice(parseInt(pos), 1);
-                                    }
-                                    applyMutateResult(addValues.length, res);
-                                })).then(function () { return (putValues.length > 0 || (criteria && typeof changes === 'object')) &&
+                                for (var pos in res.failures) {
+                                    deleteKeys.splice(parseInt(pos), 1);
+                                }
+                                applyMutateResult(addValues.length, res);
+                            })).then(function () { return (putValues.length > 0 || (criteria && typeof changes === 'object')) &&
                             coreTable.mutate({
                                 trans: trans,
                                 type: 'put',
@@ -2223,18 +2223,18 @@ var Collection =  (function () {
         var ctx = this._ctx, range = ctx.range;
         if (isPlainKeyRange(ctx) &&
             ((ctx.isPrimKey && !hangsOnDeleteLargeKeyRange) || range.type === 3 ))
-        {
+         {
             return this._write(function (trans) {
                 var primaryKey = ctx.table.core.schema.primaryKey;
                 var coreRange = range;
                 return ctx.table.core.count({ trans: trans, query: { index: primaryKey, range: coreRange } }).then(function (count) {
                     return ctx.table.core.mutate({ trans: trans, type: 'deleteRange', range: coreRange })
                         .then(function (_a) {
-                            var failures = _a.failures; _a.lastResult; _a.results; var numFailures = _a.numFailures;
-                            if (numFailures)
-                                throw new ModifyError("Could not delete some values", Object.keys(failures).map(function (pos) { return failures[pos]; }), count - numFailures);
-                            return count - numFailures;
-                        });
+                        var failures = _a.failures; _a.lastResult; _a.results; var numFailures = _a.numFailures;
+                        if (numFailures)
+                            throw new ModifyError("Could not delete some values", Object.keys(failures).map(function (pos) { return failures[pos]; }), count - numFailures);
+                        return count - numFailures;
+                    });
                 });
             });
         }
@@ -2749,8 +2749,8 @@ var Transaction =  (function () {
         if (this._locked()) {
             return new DexiePromise(function (resolve, reject) {
                 _this._blockedFuncs.push([function () {
-                    _this._promise(mode, fn, bWriteLock).then(resolve, reject);
-                }, PSD]);
+                        _this._promise(mode, fn, bWriteLock).then(resolve, reject);
+                    }, PSD]);
             });
         }
         else if (bWriteLock) {
@@ -2967,19 +2967,19 @@ function createDBCore(db, IdbKeyRange, tmpTrans) {
                         },
                         indexes: arrayify(store.indexNames).map(function (indexName) { return store.index(indexName); })
                             .map(function (index) {
-                                var name = index.name, unique = index.unique, multiEntry = index.multiEntry, keyPath = index.keyPath;
-                                var compound = isArray(keyPath);
-                                var result = {
-                                    name: name,
-                                    compound: compound,
-                                    keyPath: keyPath,
-                                    unique: unique,
-                                    multiEntry: multiEntry,
-                                    extractKey: getKeyExtractor(keyPath)
-                                };
-                                indexByKeyPath[getKeyPathAlias(keyPath)] = result;
-                                return result;
-                            }),
+                            var name = index.name, unique = index.unique, multiEntry = index.multiEntry, keyPath = index.keyPath;
+                            var compound = isArray(keyPath);
+                            var result = {
+                                name: name,
+                                compound: compound,
+                                keyPath: keyPath,
+                                unique: unique,
+                                multiEntry: multiEntry,
+                                extractKey: getKeyExtractor(keyPath)
+                            };
+                            indexByKeyPath[getKeyPathAlias(keyPath)] = result;
+                            return result;
+                        }),
                         getIndexByKeyPath: function (keyPath) { return indexByKeyPath[getKeyPathAlias(keyPath)]; }
                     };
                     indexByKeyPath[":id"] = result.primaryKey;
@@ -3473,9 +3473,9 @@ function getSchemaDiff(oldSchema, newSchema) {
                 change: []
             };
             if ((
-                    '' + (oldDef.primKey.keyPath || '')) !== ('' + (newDef.primKey.keyPath || '')) ||
+            '' + (oldDef.primKey.keyPath || '')) !== ('' + (newDef.primKey.keyPath || '')) ||
                 (oldDef.primKey.auto !== newDef.primKey.auto && !isIEOrEdge))
-            {
+             {
                 change.recreate = true;
                 diff.change.push(change);
             }
@@ -3678,14 +3678,14 @@ function getDatabaseNames(_a) {
 function _onDatabaseCreated(_a, name) {
     var indexedDB = _a.indexedDB, IDBKeyRange = _a.IDBKeyRange;
     !hasDatabasesNative(indexedDB) &&
-    name !== DBNAMES_DB &&
-    getDbNamesTable(indexedDB, IDBKeyRange).put({ name: name }).catch(nop);
+        name !== DBNAMES_DB &&
+        getDbNamesTable(indexedDB, IDBKeyRange).put({ name: name }).catch(nop);
 }
 function _onDatabaseDeleted(_a, name) {
     var indexedDB = _a.indexedDB, IDBKeyRange = _a.IDBKeyRange;
     !hasDatabasesNative(indexedDB) &&
-    name !== DBNAMES_DB &&
-    getDbNamesTable(indexedDB, IDBKeyRange).delete(name).catch(nop);
+        name !== DBNAMES_DB &&
+        getDbNamesTable(indexedDB, IDBKeyRange).delete(name).catch(nop);
 }
 
 function vip(fn) {
@@ -3726,70 +3726,70 @@ function dexieOpen(db) {
             throw new exceptions.DatabaseClosed('db.open() was cancelled');
     }
     var resolveDbReady = state.dbReadyResolve,
-        upgradeTransaction = null, wasCreated = false;
+    upgradeTransaction = null, wasCreated = false;
     return DexiePromise.race([openCanceller, (typeof navigator === 'undefined' ? DexiePromise.resolve() : idbReady()).then(function () { return new DexiePromise(function (resolve, reject) {
-        throwIfCancelled();
-        if (!indexedDB)
-            throw new exceptions.MissingAPI();
-        var dbName = db.name;
-        var req = state.autoSchema ?
-            indexedDB.open(dbName) :
-            indexedDB.open(dbName, Math.round(db.verno * 10));
-        if (!req)
-            throw new exceptions.MissingAPI();
-        req.onerror = eventRejectHandler(reject);
-        req.onblocked = wrap(db._fireOnBlocked);
-        req.onupgradeneeded = wrap(function (e) {
-            upgradeTransaction = req.transaction;
-            if (state.autoSchema && !db._options.allowEmptyDB) {
-                req.onerror = preventDefault;
-                upgradeTransaction.abort();
-                req.result.close();
-                var delreq = indexedDB.deleteDatabase(dbName);
-                delreq.onsuccess = delreq.onerror = wrap(function () {
-                    reject(new exceptions.NoSuchDatabase("Database " + dbName + " doesnt exist"));
-                });
-            }
-            else {
-                upgradeTransaction.onerror = eventRejectHandler(reject);
-                var oldVer = e.oldVersion > Math.pow(2, 62) ? 0 : e.oldVersion;
-                wasCreated = oldVer < 1;
-                db._novip.idbdb = req.result;
-                runUpgraders(db, oldVer / 10, upgradeTransaction, reject);
-            }
-        }, reject);
-        req.onsuccess = wrap(function () {
-            upgradeTransaction = null;
-            var idbdb = db._novip.idbdb = req.result;
-            var objectStoreNames = slice(idbdb.objectStoreNames);
-            if (objectStoreNames.length > 0)
-                try {
-                    var tmpTrans = idbdb.transaction(safariMultiStoreFix(objectStoreNames), 'readonly');
-                    if (state.autoSchema)
-                        readGlobalSchema(db, idbdb, tmpTrans);
-                    else {
-                        adjustToExistingIndexNames(db, db._dbSchema, tmpTrans);
-                        if (!verifyInstalledSchema(db, tmpTrans)) {
-                            console.warn("Dexie SchemaDiff: Schema was extended without increasing the number passed to db.version(). Some queries may fail.");
+            throwIfCancelled();
+            if (!indexedDB)
+                throw new exceptions.MissingAPI();
+            var dbName = db.name;
+            var req = state.autoSchema ?
+                indexedDB.open(dbName) :
+                indexedDB.open(dbName, Math.round(db.verno * 10));
+            if (!req)
+                throw new exceptions.MissingAPI();
+            req.onerror = eventRejectHandler(reject);
+            req.onblocked = wrap(db._fireOnBlocked);
+            req.onupgradeneeded = wrap(function (e) {
+                upgradeTransaction = req.transaction;
+                if (state.autoSchema && !db._options.allowEmptyDB) {
+                    req.onerror = preventDefault;
+                    upgradeTransaction.abort();
+                    req.result.close();
+                    var delreq = indexedDB.deleteDatabase(dbName);
+                    delreq.onsuccess = delreq.onerror = wrap(function () {
+                        reject(new exceptions.NoSuchDatabase("Database " + dbName + " doesnt exist"));
+                    });
+                }
+                else {
+                    upgradeTransaction.onerror = eventRejectHandler(reject);
+                    var oldVer = e.oldVersion > Math.pow(2, 62) ? 0 : e.oldVersion;
+                    wasCreated = oldVer < 1;
+                    db._novip.idbdb = req.result;
+                    runUpgraders(db, oldVer / 10, upgradeTransaction, reject);
+                }
+            }, reject);
+            req.onsuccess = wrap(function () {
+                upgradeTransaction = null;
+                var idbdb = db._novip.idbdb = req.result;
+                var objectStoreNames = slice(idbdb.objectStoreNames);
+                if (objectStoreNames.length > 0)
+                    try {
+                        var tmpTrans = idbdb.transaction(safariMultiStoreFix(objectStoreNames), 'readonly');
+                        if (state.autoSchema)
+                            readGlobalSchema(db, idbdb, tmpTrans);
+                        else {
+                            adjustToExistingIndexNames(db, db._dbSchema, tmpTrans);
+                            if (!verifyInstalledSchema(db, tmpTrans)) {
+                                console.warn("Dexie SchemaDiff: Schema was extended without increasing the number passed to db.version(). Some queries may fail.");
+                            }
                         }
+                        generateMiddlewareStacks(db, tmpTrans);
                     }
-                    generateMiddlewareStacks(db, tmpTrans);
-                }
-                catch (e) {
-                }
-            connections.push(db);
-            idbdb.onversionchange = wrap(function (ev) {
-                state.vcFired = true;
-                db.on("versionchange").fire(ev);
-            });
-            idbdb.onclose = wrap(function (ev) {
-                db.on("close").fire(ev);
-            });
-            if (wasCreated)
-                _onDatabaseCreated(db._deps, dbName);
-            resolve();
-        }, reject);
-    }); })]).then(function () {
+                    catch (e) {
+                    }
+                connections.push(db);
+                idbdb.onversionchange = wrap(function (ev) {
+                    state.vcFired = true;
+                    db.on("versionchange").fire(ev);
+                });
+                idbdb.onclose = wrap(function (ev) {
+                    db.on("close").fire(ev);
+                });
+                if (wasCreated)
+                    _onDatabaseCreated(db._deps, dbName);
+                resolve();
+            }, reject);
+        }); })]).then(function () {
         throwIfCancelled();
         state.onReadyBeingFired = [];
         return DexiePromise.resolve(vip(function () { return db.on.ready.fire(db.vip); })).then(function fireRemainders() {
@@ -3976,8 +3976,8 @@ function createVirtualIndexMiddleware(down) {
                                 req.unique ?
                                     cursor.continue(cursor.key.slice(0, keyLength)
                                         .concat(req.reverse
-                                            ? down.MIN_KEY
-                                            : down.MAX_KEY, keyTail)) :
+                                        ? down.MIN_KEY
+                                        : down.MAX_KEY, keyTail)) :
                                     cursor.continue();
                         }
                         var virtualCursor = Object.create(cursor, {
@@ -4162,18 +4162,18 @@ var hooksMiddleware = {
                     function deleteNextChunk(trans, range, limit) {
                         return downTable.query({ trans: trans, values: false, query: { index: primaryKey, range: range }, limit: limit })
                             .then(function (_a) {
-                                var result = _a.result;
-                                return addPutOrDelete({ type: 'delete', keys: result, trans: trans }).then(function (res) {
-                                    if (res.numFailures > 0)
-                                        return Promise.reject(res.failures[0]);
-                                    if (result.length < limit) {
-                                        return { failures: [], numFailures: 0, lastResult: undefined };
-                                    }
-                                    else {
-                                        return deleteNextChunk(trans, __assign(__assign({}, range), { lower: result[result.length - 1], lowerOpen: true }), limit);
-                                    }
-                                });
+                            var result = _a.result;
+                            return addPutOrDelete({ type: 'delete', keys: result, trans: trans }).then(function (res) {
+                                if (res.numFailures > 0)
+                                    return Promise.reject(res.failures[0]);
+                                if (result.length < limit) {
+                                    return { failures: [], numFailures: 0, lastResult: undefined };
+                                }
+                                else {
+                                    return deleteNextChunk(trans, __assign(__assign({}, range), { lower: result[result.length - 1], lowerOpen: true }), limit);
+                                }
                             });
+                        });
                     }
                 } });
             return tableMiddleware;
@@ -4253,20 +4253,20 @@ var RangeSet = function (fromOrTree, to) {
     }
 };
 props(RangeSet.prototype, (_a = {
-    add: function (rangeSet) {
-        mergeRanges(this, rangeSet);
-        return this;
+        add: function (rangeSet) {
+            mergeRanges(this, rangeSet);
+            return this;
+        },
+        addKey: function (key) {
+            addRange(this, key, key);
+            return this;
+        },
+        addKeys: function (keys) {
+            var _this = this;
+            keys.forEach(function (key) { return addRange(_this, key, key); });
+            return this;
+        }
     },
-    addKey: function (key) {
-        addRange(this, key, key);
-        return this;
-    },
-    addKeys: function (keys) {
-        var _this = this;
-        keys.forEach(function (key) { return addRange(_this, key, key); });
-        return this;
-    }
-},
     _a[iteratorSymbol] = function () {
         return getRangeSetIterator(this);
     },
@@ -4912,7 +4912,7 @@ function liveQuery(querier) {
             var exec = function () { return newScope(querier, { subscr: subscr, trans: null }); };
             var rv = PSD.trans
                 ?
-                usePSD(PSD.transless, exec)
+                    usePSD(PSD.transless, exec)
                 : exec();
             if (scopeFuncIsAsync) {
                 rv.then(decrementExpectedAwaits, decrementExpectedAwaits);

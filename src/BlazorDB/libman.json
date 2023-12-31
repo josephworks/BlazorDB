@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "dexie@3.2.4",
+      "destination": "wwwroot/",
+      "files": [
+        "dist/dexie.mjs",
+        "dist/dexie.mjs.map"
+      ]
+    }
+  ]
+}
